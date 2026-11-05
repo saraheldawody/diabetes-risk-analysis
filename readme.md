@@ -1,63 +1,74 @@
-# Diabetes Risk Analysis Project
+# Diabetes Risk Analysis
 
-## Overview
-This project aims to analyze factors contributing to diabetes risk by examining various health metrics such as Glucose, BMI, Age, and others. The analysis employs statistical methods and visualizations to identify key predictors of diabetes outcomes and provide actionable recommendations.
+An exploratory Python analysis of health measurements and a recorded binary diabetes outcome. The project demonstrates data-quality checks, missing-measurement handling, and visual exploration. **No predictive model or model performance result is included.** This is an educational portfolio project, not a clinical tool.
 
-## Table of Contents
-- [Installation](#installation)
-- [Usage](#usage)
-- [Data Description](#data-description)
-- [Key Findings](#key-findings)
-- [Visualizations](#visualizations)
-- [Conclusions & Recommendations](#conclusions--recommendations)
-- [Limitations & Future Work](#limitations--future-work)
+## What is implemented
 
-## Installation
-To run this project, ensure you have Python installed along with the following packages:
+- Inspect the bundled CSV and summarize feature distributions and class counts.
+- Audit zero-coded missing measurements and apply outcome-independent median imputation for EDA.
+- Explore correlations, pair plots, outcome counts, violin/KDE plots, and scatter plots.
+- Flag IQR outliers without automatically capping observations.
+
+## Repository guide
+
+| Path | Purpose |
+| --- | --- |
+| `diabetes.csv` | Bundled input dataset; unchanged by analysis |
+| `diabetes.ipynb` | Main analysis, with outputs cleared after preprocessing corrections |
+| `scripts/check_analysis.py` | Dataset integrity checks and headless execution of every code cell |
+| `requirements.txt` | Pinned direct analysis dependencies |
+| `requirements-notebook.txt` | Optional interactive notebook tooling |
+| `docs/REVIEW.md` | Review findings, remaining gaps, and evaluation acceptance criteria |
+
+## Run locally
+
+Use Python 3.12 (the headless verification environment).
 
 ```bash
-pip install pandas numpy matplotlib seaborn scikit-learn
-```
-
-## Usage
-1. Clone the repository:
-
-```bash
-git clone <repository_url>
+git clone https://github.com/saraheldawody/diabetes-risk-analysis.git
 cd diabetes-risk-analysis
+python -m venv .venv
+source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python scripts/check_analysis.py
 ```
 
-2. Open a Jupyter Notebook or a Python script and run the analysis.
-3. Load the dataset and execute the analysis code to generate visualizations and insights.
+For interactive exploration:
 
-## Data Description
-The dataset consists of various health metrics for 768 individuals. The key features include:
-- **Pregnancies**: Number of times pregnant
-- **Glucose**: Plasma glucose concentration a 2 hours in an oral glucose tolerance test
-- **BloodPressure**: Diastolic blood pressure (mm Hg)
-- **SkinThickness**: Triceps skin fold thickness (mm)
-- **Insulin**: 2-Hour serum insulin (mu U/ml)
-- **BMI**: Body mass index (weight in kg/(height in m)^2)
-- **DiabetesPedigreeFunction**: A function that scores the likelihood of diabetes based on family history
-- **Age**: Age (years)
-- **Outcome**: Class variable (0 or 1) indicating whether a patient is diabetic
+```bash
+python -m pip install -r requirements-notebook.txt
+jupyter lab diabetes.ipynb
+```
 
-## Key Findings
-- Glucose is the strongest predictor of diabetes outcomes.
-- Non-diabetic individuals exhibit lower glucose levels compared to diabetic individuals.
-- A positive relationship exists between Insulin and Glucose.
-- Age and BMI significantly influence diabetes risk.
+Run notebook cells from top to bottom with the repository root as the working directory. The headless check executes Python cells in sequence but does not validate Jupyter rendering or write outputs into the notebook. The direct dependencies are pinned, but a complete transitive lockfile and clean-environment installation check remain outstanding.
 
-## Visualizations
-The project includes various visualizations, such as:
-- Heatmaps showing correlation between features
-- Violin plots to visualize glucose distribution by outcome
-- KDE plots for glucose levels by diabetes outcome
-- Scatter plots with trend lines illustrating relationships between glucose and insulin
+## Data and descriptive findings
 
-## Conclusions & Recommendations
-The analysis emphasizes the importance of regular glucose screening, promoting lifestyle changes, and enhancing insulin monitoring. Machine learning techniques are recommended for future investigations to better understand the non-linear relationships in the data.
+The CSV contains **768 rows, eight input columns, and `Outcome`**. There are **500 records labeled 0** and **268 labeled 1**. These are dataset counts, not predictive results.
 
-## Limitations & Future Work
-The analysis is limited by data constraints, generalizability, and the cross-sectional nature of the dataset. Future work should focus on incorporating a wider range of data and evaluating specific interventions aimed at reducing diabetes risk.
+| Column | Meaning documented in the original notebook |
+| --- | --- |
+| Pregnancies | Number of pregnancies |
+| Glucose | Glucose measurement |
+| BloodPressure | Diastolic blood pressure |
+| SkinThickness | Triceps skinfold thickness |
+| Insulin | Serum insulin measurement |
+| BMI | Body mass index |
+| DiabetesPedigreeFunction | Diabetes pedigree score |
+| Age | Age in years |
+| Outcome | Recorded binary diabetes label |
 
+The source citation, cohort definition, measurement protocol/units, target timing, and redistribution terms are **not established by the repository**. Verify these before presenting population-specific conclusions or redistributing the data under a new license. No project license is currently supplied.
+
+Zero-coded missing measurements occur in Glucose (5), BloodPressure (35), SkinThickness (227), Insulin (374), and BMI (11). The corrected EDA replaces those zeros with missing values and then nonzero column medians, without consulting `Outcome`. Pregnancy and outcome zeros are retained. Median imputation is a documented exploratory choice, not evidence that missingness has been resolved without bias.
+
+## Interpretation and limitations
+
+Plots and correlations describe associations within this sample. They do not establish causality, statistical significance, future onset risk, treatment effects, or generalization to Egypt. Earlier numerical interpretations were removed after correcting preprocessing; rerun the notebook before interpreting its plots. No accuracy, recall, AUROC, or clinical benefit is claimed.
+
+## Next priorities
+
+1. Verify dataset provenance, cohort/target definitions, and licensing.
+2. Compare raw versus imputed EDA and assess missingness sensitivity.
+3. If extending to prediction, implement training-fold preprocessing, stratified validation, dummy/logistic baselines, and a held-out evaluation. See [the review and evaluation plan](docs/REVIEW.md).
