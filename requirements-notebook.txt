@@ -1,0 +1,3 @@
+-r requirements.txt
+# Interactive tooling is not part of the verified headless environment.
+jupyterlab>=4,<5
